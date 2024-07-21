@@ -59,7 +59,17 @@ class _WeatherHistoryViewState extends State<WeatherHistoryView> {
           if (weatherProvider.isLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (weatherProvider.errorMessage.isNotEmpty) {
-            return Text(weatherProvider.errorMessage);
+            return Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(weatherProvider.errorMessage),
+                  TextButton(onPressed: () => weatherProvider.loadSavedWeatherData(), child: const Text("Retry")),
+
+                ],
+              ),
+            );
           } else if (weatherProvider.weatherHistoryFilterResponse.isNotEmpty) {
             return Padding(
               padding: const EdgeInsets.all(16.0),

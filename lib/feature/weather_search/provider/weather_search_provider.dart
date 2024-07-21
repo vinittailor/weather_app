@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:weather_app/feature/weather_search/model/weather_search_response.dart';
@@ -44,6 +45,14 @@ class WeatherSearchProvider with ChangeNotifier {
   }
 
   void findLocationFromCity(BuildContext context) async {
+
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult[0] == ConnectivityResult.none) {
+      _errorMessage = 'No internet connection';
+      notifyListeners();
+      return;
+    }
+
     var location = await LocationService.getLocationsFromAddress(cityController.text.trim());
     _lat = location[0].latitude.toString();
     _lon = location[0].longitude.toString();
@@ -61,7 +70,13 @@ class WeatherSearchProvider with ChangeNotifier {
     _isLoading = true; // Set loading state to true
 
     try {
-
+      var connectivityResult = await (Connectivity().checkConnectivity());
+      if (connectivityResult[0] == ConnectivityResult.none) {
+        _errorMessage = 'No internet connection';
+        _isLoading = false;
+        notifyListeners();
+        return;
+      }
 
       // Fetch data from the API using WeatherApiService
       final response = await WeatherApiService.fetchWeatherData(context,_lat,_lon);

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:weather_app/feature/weather_search/model/weather_history_response.dart';
@@ -111,7 +112,17 @@ class WeatherHistoryProvider with ChangeNotifier {
     _isLoading = true;
     _weatherHistoryResponse.clear();
     _weatherHistoryFilterResponse.clear();
+    _errorMessage = "";
     try {
+
+      var connectivityResult = await (Connectivity().checkConnectivity());
+      if (connectivityResult[0] == ConnectivityResult.none) {
+        _errorMessage = 'No internet connection';
+        _isLoading = false;
+        notifyListeners();
+        return;
+      }
+
       final userDoc = FirebaseFirestore.instance.collection('weatherData');
       final docSnapshot = await userDoc.get();
       if (docSnapshot.size > 0) {
@@ -131,7 +142,7 @@ class WeatherHistoryProvider with ChangeNotifier {
             }
           }
         }
-        _weatherHistoryResponse = _weatherHistoryResponse;
+        _weatherHistoryFilterResponse = _weatherHistoryResponse;
         notifyListeners();
       } else {
         // Handle case where user document doesn't exist

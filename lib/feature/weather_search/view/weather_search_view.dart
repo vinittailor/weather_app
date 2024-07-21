@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +28,7 @@ class _WeatherSearchViewState extends State<WeatherSearchView> {
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
-      onPopInvoked: (value){
+      onPopInvoked: (value) {
         showExitPop(context);
       },
       child: Scaffold(
@@ -38,9 +37,11 @@ class _WeatherSearchViewState extends State<WeatherSearchView> {
           foregroundColor: Colors.white,
           title: const Text("Weather"),
           actions: [
-            IconButton(onPressed: (){
-              navigateToNextPage(context, const WeatherHistoryView());
-            }, icon: const Icon(Icons.history_rounded))
+            IconButton(
+                onPressed: () {
+                  navigateToNextPage(context, const WeatherHistoryView());
+                },
+                icon: const Icon(Icons.history_rounded))
           ],
         ),
         body: SingleChildScrollView(
@@ -72,7 +73,19 @@ class _WeatherSearchViewState extends State<WeatherSearchView> {
                     if (weatherProvider.isLoading) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (weatherProvider.errorMessage.isNotEmpty) {
-                      return Text(weatherProvider.errorMessage);
+                      return SizedBox(
+                        height: 500,
+                        child: Center(
+                            child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Text(weatherProvider.errorMessage),
+                            TextButton(onPressed: () => weatherProvider.findLocationFromCity(context), child: const Text("Retry")),
+                          ],
+                        )),
+                      );
                     } else if (weatherProvider.weatherSearchResponse != null) {
                       return SizedBox(
                         width: double.infinity,
@@ -88,7 +101,9 @@ class _WeatherSearchViewState extends State<WeatherSearchView> {
                             40.hGap,
                             Image.asset(
                               Images.getWeatherIconPath(weatherProvider
-                                      .weatherSearchResponse!.weather?[0].icon ??
+                                      .weatherSearchResponse!
+                                      .weather?[0]
+                                      .icon ??
                                   ""),
                               height: 80,
                               width: 80,
@@ -188,22 +203,26 @@ class _WeatherSearchViewState extends State<WeatherSearchView> {
                               width: double.infinity,
                               height: 55,
                               child: ElevatedButton(
-                                onPressed: () {
-                                  weatherProvider.saveWeatherData(context);
-                                },
+                                  onPressed: () {
+                                    weatherProvider.saveWeatherData(context);
+                                  },
                                   style: ButtonStyle(
-                                      foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
-                                      backgroundColor: WidgetStateProperty.all<Color>(Colors.deepPurpleAccent),
-                                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                                      foregroundColor:
+                                          WidgetStateProperty.all<Color>(
+                                              Colors.white),
+                                      backgroundColor:
+                                          WidgetStateProperty.all<Color>(
+                                              Colors.deepPurpleAccent),
+                                      shape: WidgetStateProperty.all<
+                                              RoundedRectangleBorder>(
                                           RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(16.0),
-
-                                          )
-                                      )
-                                  ),
-
-                                child: const Text("Save",style: TextStyle(fontSize: 16),)
-                              ),
+                                        borderRadius:
+                                            BorderRadius.circular(16.0),
+                                      ))),
+                                  child: const Text(
+                                    "Save",
+                                    style: TextStyle(fontSize: 16),
+                                  )),
                             ),
                           ],
                         ),
