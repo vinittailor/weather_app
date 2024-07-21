@@ -9,6 +9,20 @@ A Flutter application that fetches weather data, displays it, and allows users t
 * Firebase account and project set up
 * A text editor or IDE
 
+## Installation
+
+1. Clone the repository:
+git clone https://github.com/vinittailor/weather_app.git
+
+2. Navigate to the project directory:
+cd weather-app
+
+3. Get dependencies:
+flutter pub get
+
+4. Configure Firebase:
+Replace the placeholder Firebase configuration in your code with your project's details.
+
 ### Screenshots
 
 <img src="https://github.com/user-attachments/assets/16168c92-cb09-42c1-ae9f-8b3ae2c85c7e" width="150" height="280">
